@@ -1,4 +1,39 @@
+#!/usr/bin/env python3
+
 from sys import stdout
+
+class ProposalInput:
+  def __init__(self, law):
+    self.law = law
+
+class QueryInput:
+  def __init__(self):
+    pass
+
+class PingInput:
+  def __init__(self):
+    pass
+
+#To be extended by our custom input messages
+class CommunicationInput:
+  def __init__(self, source, payload):
+    self.source = source
+    self.payload = payload
+
+class NoResultOutput:
+  def __init__(self, source):
+    pass
+
+class ResultOutput:
+  def __init__(self, result):
+    self.result = result
+
+#To be extended by our custom output messages
+class CommunicationOutput:
+  def __init__(self, target, payload):
+    self.target = target
+    self.payload = payload
+
 
 
 class Senator:
@@ -54,13 +89,25 @@ class Vote:
         return True
 
 
+def parse_input(line):
+  if line.startswith("PROPOSE"):
+    return ProposalInput(line[len("PROPOSE "):])
+  if line.startswith("QUERY"):
+    return QueryInput()
+  if line.startswith("PING"):
+    return PingInput()
+
+  si = line.index(' ')
+  source = int(line[:si])
+  return CommunicationInput(source, line[si + 1:])
+
+
 def main():
     idx = input().split(' ')
     senator = Senator(int(id([0])), int(idx[1]) - 1)
 
     while True:
-        request = input()
-
+        parcedInput = parse_input(input())
 
 if __name__ == '__main__':
     main()
